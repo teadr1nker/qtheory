@@ -9,19 +9,22 @@ def queueSim(type, Es, Et):
     n = 100
     N = 1000
     mtx = np.zeros((n, N))
+    str = '<' if Es < Et else '>'
+    print(f'Type: {type}, lambda: {lmbd}, mu: {mu}, Es {str} Et')
+    a = 10.0
 
     for i in range(100):
-        if type[0] == 'm':
+        if type[1] == 'm':
             S = np.random.exponential(Es, N-1)
-        elif type[0] == 'p':
-            S = np.random.pareto(Es, N-1)
+        elif type[1] == 'p':
+            S = (np.random.pareto(a, N-1)+1) * Es
         else:
             return None
 
-        if type[1] == 'm':
+        if type[0] == 'm':
             T = np.random.exponential(Et, N-1)
-        elif type[1] == 'p':
-            T = np.random.pareto(Et, N-1)
+        elif type[0] == 'p':
+            T = (np.random.pareto(a, N-1)+1) * Et
         else:
             return None
 
@@ -31,36 +34,26 @@ def queueSim(type, Es, Et):
             mtx[i, j-1] + S[j-1] - T[j-1]
             ])
 
+    ro = Es / Et
+    #print('aaa', S.mean(), T.mean(), ro)
     EW = None
-    if type[1] == 'm':
-        EW = (lmbd * np.mean(S ** 2)) / (2*(1 - mu))
-        print(EW)
-    '''avg = [row.mean() for row in mtx]
-    #print(avg)
-    plt.plot(avg)
-    plt.title(f'Plot {type}, Es:{Es}, Et:{Et}')
-    if Ew:
-        plt.axhline(Ew, color='orange')
-        plt.legend(['avg mean', f'Ew={Ew}'])
-
-    if Es < Et:
-        str = '<'
-    else:
-        str = '>'
-
-    plt.savefig(f'plot_{type}_Es{str}Et.png')
-    plt.clf()
-    plt.hist(avg, bins=100)
-    plt.title(f'Histogram {type}, Es:{Es}, Et:{Et}')
-    plt.savefig(f'hist_{type}_Es{str}Et.png')
-    plt.clf()'''
+    if 1 - ro > 0:
+        #EW = (lmbd * np.mean(S ** 2)) / (2*(1 - mu))
+        #EW = (lmbd*Es**2)/(2*(1-ro))
+        if type[0] == 'm':
+            if type[1] == 'p':
+                #EW = (lmbd*mu) / (2*(mu-2)*(1-(mu*lmbd)/(mu-1)))
+                EW = (lmbd*Es**2)/(2*(1-ro))
+            else:
+                EW = lmbd/(mu*(mu-lmbd))
 
     avg = np.array([row.mean() for row in mtx.T])
     plt.plot(avg)
+
     if EW:
+        print(f'EW: {EW} real mean: {avg.mean()}')
         plt.axhline(EW, color='red')
     plt.title(f'Plot {type}, Es:{Es}, Et:{Et}')
-    str = '<' if Es < Et else '>'
     plt.savefig(f'plot_{type}_Es{str}Et.png')
     plt.clf()
 
