@@ -43,7 +43,7 @@ def queueSim(type, Es, Et):
         if type[0] == 'm':
             if type[1] == 'p':
                 #EW = (lmbd*mu) / (2*(mu-2)*(1-(mu*lmbd)/(mu-1)))
-                EW = (lmbd*Es**2)/(2*(1-ro))
+                EW = (lmbd*np.mean(S**2))/(2*(1-ro))
             else:
                 EW = lmbd/(mu*(mu-lmbd))
 
