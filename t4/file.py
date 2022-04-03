@@ -4,42 +4,39 @@ import matplotlib.pyplot as plt
 
 #1
 lmbd = 3
-mu1 = 6
-mu2 = 9
+mu1 = 4
+mu2 = 10
 T = 10000
 N = 1000
-meanEnd = np.zeros(N)
-#count = np.array(N, list)
-count = []
-#time = np.zeros((N, 1000))
-time = []
+meanEnd = np.zeros(N) #average time spent past time limit
+count = [] #amount of requests in the system at current moment
+time = []  #time each request spends in the system
 
 for c in range(N):
-    t = 0.
-    n1 = 0
-    n2 = 0
-    NA = 0
-    ND = 0
-    tA = np.random.exponential(lmbd)
-    t1 = np.infty
-    t2 = np.infty
-    A1 = []
+    t = 0. #time
+    n1 = 0 #current number of requests to server 1
+    n2 = 0 # -/- 2
+    NA = 0 #number of pending requests
+    ND = 0 #number of done requests
+    tA = np.random.exponential(lmbd) #time remaining for next request
+    t1 = np.infty #time for request processing on server 1
+    t2 = np.infty # -/- 2
+    A1 = [] #time of request n
     A2 = []
-    D = []
+    D = [] #time of completion
     print(f'sim {c}')
-    end = 0
+    end = 0 #last request number
     count.append([])
     while t < T or n1 > 0 or n2 > 0:
-
+        # adding request
         if tA == min([tA, t1, t2]):
             t = tA
             NA += 1
             n1 += 1
             tA = t + np.random.exponential(lmbd) if t < T else np.infty
-            #tA = t + np.random.exponential(lmbd)
             t1 = t + np.random.exponential(mu1)
             A1.append(t)
-
+        # passing request to second server
         elif t1 <= t2:
             t = t1
             n1 -= 1
@@ -48,7 +45,7 @@ for c in range(N):
 
             t2 = t + np.random.exponential(mu2)
             A2.append(t)
-
+        # completing the request
         else:
             t = t2
             ND += 1
@@ -85,8 +82,6 @@ for i in range(MAX):
         res += count[j][i] if len(count[j]) > i else 0.
     meanCount[i] = res/N
 
-#print(meanCount)
-
 plt.plot(meanCount)
 plt.title('Average amount of requests at given moment')
 plt.xlabel('Moment')
@@ -98,6 +93,9 @@ plt.clf()
 plt.plot(meanEnd)
 plt.title(f'Average time spent after time limit = {T}')
 plt.xlabel('Run number')
+m = np.mean(meanEnd)
+plt.axhline(m, color='orange')
+plt.legend(['meaningless plot', f'mean: {m}'])
 plt.ylabel('Time')
 plt.savefig('meanEnd.png')
 plt.clf()
