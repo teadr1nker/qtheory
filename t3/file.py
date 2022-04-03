@@ -35,17 +35,12 @@ def queueSim(type, Es, Et):
             ])
 
     ro = Es / Et
-    #print('aaa', S.mean(), T.mean(), ro)
     EW = None
-    if 1 - ro > 0:
-        #EW = (lmbd * np.mean(S ** 2)) / (2*(1 - mu))
-        #EW = (lmbd*Es**2)/(2*(1-ro))
-        if type[0] == 'm':
-            if type[1] == 'p':
-                #EW = (lmbd*mu) / (2*(mu-2)*(1-(mu*lmbd)/(mu-1)))
-                EW = (lmbd*np.mean(S**2))/(2*(1-ro))
-            else:
-                EW = lmbd/(mu*(mu-lmbd))
+    if ro < 1:
+        if type == 'mm1':
+            EW = lmbd / (mu * (mu - lmbd))
+        elif type == 'mp1':
+            EW = (lmbd*(Es**2)) / (2 * (1 - ro))
 
     avg = np.array([row.mean() for row in mtx.T])
     plt.plot(avg)
@@ -57,14 +52,14 @@ def queueSim(type, Es, Et):
     plt.savefig(f'plot_{type}_Es{str}Et.png')
     plt.clf()
 
-queueSim('mm1', 5, 2)
-queueSim('mm1', 2, 5)
+queueSim('mm1', 1/3, 1/5)
+queueSim('mm1', 1/5, 1/3)
 
-queueSim('mp1', 5, 2)
-queueSim('mp1', 2, 5)
+queueSim('mp1', 1/3, 1/5)
+queueSim('mp1', 1/5, 1/3)
 
-queueSim('pm1', 5, 2)
-queueSim('pm1', 2, 5)
+queueSim('pm1', 1/3, 1/5)
+queueSim('pm1', 1/5, 1/3)
 
-queueSim('pp1', 5, 2)
-queueSim('pp1', 2, 5)
+queueSim('pp1', 1/3, 1/5)
+queueSim('pp1', 1/5, 1/3)
