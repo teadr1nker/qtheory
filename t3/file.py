@@ -42,6 +42,7 @@ def queueSim(type, Es, Et):
         elif type == 'mp1':
             EW = (lmbd*(Es**2)) / (2 * (1 - ro))
 
+
     avg = np.array([row.mean() for row in mtx.T])
     plt.plot(avg)
 
@@ -49,17 +50,18 @@ def queueSim(type, Es, Et):
         print(f'EW: {EW} real mean: {avg.mean()}')
         plt.axhline(EW, color='red')
     plt.title(f'Plot {type}, Es:{Es}, Et:{Et}')
+    plt.xlabel('Request'); plt.ylabel('Waiting time')
     plt.savefig(f'plot_{type}_Es{str}Et.png')
     plt.clf()
 
-queueSim('mm1', 1/3, 1/5)
-queueSim('mm1', 1/5, 1/3)
+queueSim('mm1', 1/4, 1/8)
+queueSim('mm1', 1/8, 1/4)
 
-queueSim('mp1', 1/3, 1/5)
-queueSim('mp1', 1/5, 1/3)
+queueSim('mp1', 1/4, 1/8)
+queueSim('mp1', 1/8, 1/4)
 
-queueSim('pm1', 1/3, 1/5)
-queueSim('pm1', 1/5, 1/3)
+queueSim('pm1', 1/4, 1/8)
+queueSim('pm1', 1/8, 1/4)
 
-queueSim('pp1', 1/3, 1/5)
-queueSim('pp1', 1/5, 1/3)
+queueSim('pp1', 1/4, 1/8)
+queueSim('pp1', 1/8, 1/4)
