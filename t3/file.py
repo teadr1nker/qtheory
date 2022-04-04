@@ -3,15 +3,18 @@ import numpy as np
 import scipy.stats as stats
 import matplotlib.pyplot as plt
 
-def queueSim(type, Es, Et):
-    mu   = 1/Es
-    lmbd = 1/Et
+def queueSim(type, mu, lmbd):
+
+    Es = mu/(mu - 1) if type[1] == 'p' else 1/mu
+    Et = 1/lmbd
+    #mu   = 1/Es
+    #lmbd = 1/Et
     n = 100
     N = 1000
     mtx = np.zeros((n, N))
     str = '<' if Es < Et else '>'
     print(f'Type: {type}, lambda: {lmbd}, mu: {mu}, Es {str} Et')
-    a = 10.0
+    a = 50.
 
     for i in range(100):
         if type[1] == 'm':
@@ -34,13 +37,14 @@ def queueSim(type, Es, Et):
             mtx[i, j-1] + S[j-1] - T[j-1]
             ])
 
-    ro = Es / Et
+    ro = Es / Et if type[1] != 'p' else (lmbd*mu)/(mu - 1)
     EW = None
     if ro < 1:
         if type == 'mm1':
             EW = lmbd / (mu * (mu - lmbd))
         elif type == 'mp1':
-            EW = (lmbd*(Es**2)) / (2 * (1 - ro))
+            #print(type)
+            EW = (lmbd*(mu/(mu - 2))) / (2 * (1 - ro))
 
 
     avg = np.array([row.mean() for row in mtx.T])
@@ -49,19 +53,19 @@ def queueSim(type, Es, Et):
     if EW:
         print(f'EW: {EW} real mean: {avg.mean()}')
         plt.axhline(EW, color='red')
-    plt.title(f'Plot {type}, Es:{Es}, Et:{Et}')
+    plt.title(f'Plot {type}, Es:{round(Es, 4)}, Et:{round(Et, 4)}')
     plt.xlabel('Request'); plt.ylabel('Waiting time')
     plt.savefig(f'plot_{type}_Es{str}Et.png')
     plt.clf()
 
-queueSim('mm1', 1/4, 1/8)
-queueSim('mm1', 1/8, 1/4)
+queueSim('mm1', 4, 8)
+queueSim('mm1', 8, 4)
 
-queueSim('mp1', 1/4, 1/8)
-queueSim('mp1', 1/8, 1/4)
+queueSim('mp1', 8, 0.5)
+queueSim('mp1', 2, 8)
 
-queueSim('pm1', 1/4, 1/8)
-queueSim('pm1', 1/8, 1/4)
+queueSim('pm1', 4, 8)
+queueSim('pm1', 8, 4)
 
-queueSim('pp1', 1/4, 1/8)
-queueSim('pp1', 1/8, 1/4)
+queueSim('pp1', 4, 8)
+queueSim('pp1', 8, 4)

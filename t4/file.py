@@ -3,11 +3,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #1
-lmbd = 3
+lmbd = 5
 mu1 = 4
 mu2 = 10
-T = 10000
-N = 1000
+T = 1000
+N = 100
 meanEnd = np.zeros(N) #average time spent past time limit
 count = [] #amount of requests in the system at current moment
 time = []  #time each request spends in the system
@@ -18,7 +18,7 @@ for c in range(N):
     n2 = 0 # -/- 2
     NA = 0 #number of pending requests
     ND = 0 #number of done requests
-    tA = np.random.exponential(lmbd) #time remaining for next request
+    tA = np.random.exponential(1/lmbd) #time remaining for next request
     t1 = np.infty #time for request processing on server 1
     t2 = np.infty # -/- 2
     A1 = [] #time of request n
@@ -33,24 +33,24 @@ for c in range(N):
             t = tA
             NA += 1
             n1 += 1
-            tA = t + np.random.exponential(lmbd) if t < T else np.infty
-            t1 = t + np.random.exponential(mu1)
+            tA = t + np.random.exponential(1/lmbd) if t < T else np.infty
+            t1 = t + np.random.exponential(1/mu1)
             A1.append(t)
         # passing request to second server
         elif t1 <= t2:
             t = t1
             n1 -= 1
             n2 += 1
-            t1 = t + np.random.exponential(mu1) if n1 > 0 else np.infty
+            t1 = t + np.random.exponential(1/mu1) if n1 > 0 else np.infty
 
-            t2 = t + np.random.exponential(mu2)
+            t2 = t + np.random.exponential(1/mu2)
             A2.append(t)
         # completing the request
         else:
             t = t2
             ND += 1
             n2 -= 1
-            t2 = t + np.random.exponential(mu2) if n2 > 0 else np.infty
+            t2 = t + np.random.exponential(1/mu2) if n2 > 0 else np.infty
             D.append(t)
             count[c].append(NA - ND)
             if t < T:
