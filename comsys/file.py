@@ -14,7 +14,7 @@ def queueSim(mu, lmbd, N=100):
     print(f'Type: mm1, lambda: {lmbd}, mu: {mu}, Es: {Es} Et: {Et} N: {N}')
 
     S = np.random.exponential(Es, N-1)
-    T = np.random.exponential(Et, N-1)
+    T = np.random.poisson(Et, N-1)
 
     for i in range(1, N):
         W[i] = max(0, W[i-1] + S[i-1] - T[i-1])
